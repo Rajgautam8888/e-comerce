@@ -2,23 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BookBazaar Netflix Pro</title>
+<title>BookBazaar Premium</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: #141414;
+    background: radial-gradient(circle at top, #1b1b1b, #0d0d0d);
     color: white;
 }
 
 /* HEADER */
 header {
-    background: black;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
     padding: 15px;
     text-align: center;
-    font-size: 22px;
-    letter-spacing: 2px;
+    font-size: 24px;
+    letter-spacing: 3px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 /* HERO */
@@ -27,29 +29,44 @@ header {
     background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') center/cover no-repeat;
     display: flex;
     align-items: center;
-    padding-left: 50px;
+    padding-left: 60px;
+    position: relative;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+}
+
+.hero div {
+    position: relative;
+    max-width: 500px;
 }
 
 .hero h1 {
-    font-size: 40px;
+    font-size: 42px;
 }
 
 .hero button {
     margin-top: 15px;
-    padding: 10px 20px;
-    background: red;
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #ff004c, #ff7b00);
     border: none;
     color: white;
+    border-radius: 30px;
     cursor: pointer;
 }
 
 /* ROW */
 .row {
-    margin: 20px;
+    margin: 25px;
 }
 
 .row h2 {
     margin-left: 10px;
+    font-weight: 600;
 }
 
 /* SCROLL */
@@ -57,75 +74,93 @@ header {
     display: flex;
     overflow-x: auto;
     padding: 10px;
+    gap: 15px;
 }
 
 .row-container::-webkit-scrollbar {
     display: none;
 }
 
-/* BOOK CARD */
+/* BOOK CARD PREMIUM */
 .book {
-    min-width: 160px;
-    margin-right: 12px;
-    cursor: pointer;
-    transition: transform 0.3s;
+    min-width: 170px;
     position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.4s;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+/* IMAGE */
 .book img {
     width: 100%;
-    border-radius: 8px;
+    height: 240px;
+    object-fit: cover;
+    transition: 0.4s;
 }
 
-/* NCERT STYLE PREVIEW BOX */
-.book .inside {
-    position: absolute;
-    bottom: 10px;
-    left: 5px;
-    right: 5px;
-    background: rgba(0,0,0,0.75);
-    font-size: 10px;
-    padding: 6px;
-    border-radius: 5px;
-}
-
-/* HOVER */
+/* HOVER EFFECT */
 .book:hover {
-    transform: scale(1.25);
-    z-index: 5;
-    box-shadow: 0 0 20px red;
+    transform: scale(1.15);
+    box-shadow: 0 0 25px rgba(255,0,76,0.6);
+}
+
+/* BOOK INFO OVERLAY (THEME FEEL) */
+.book .info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    padding: 10px;
+}
+
+/* TITLE */
+.book .info h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* TAG */
+.tag {
+    font-size: 10px;
+    color: #ffcc70;
 }
 
 /* CART */
 .cart {
     position: fixed;
-    right: 10px;
-    top: 80px;
-    background: rgba(0,0,0,0.9);
+    right: 15px;
+    top: 85px;
+    width: 260px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
     padding: 15px;
-    width: 250px;
-    border-radius: 10px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* BUTTON */
 button {
-    background: red;
+    background: #ff004c;
     color: white;
     border: none;
     padding: 8px;
     cursor: pointer;
+    border-radius: 5px;
 }
 </style>
 </head>
 
 <body>
 
-<header>📚 BookBazaar Netflix Edition</header>
+<header>📚 BookBazaar Premium Library</header>
 
 <div class="hero">
     <div>
         <h1>Unlimited Books & Knowledge</h1>
-        <p>Netflix-style learning experience</p>
+        <p>Premium Netflix-style learning experience</p>
         <button>Explore Now</button>
     </div>
 </div>
@@ -140,42 +175,43 @@ button {
 
 <script>
 
+/* PREMIUM BOOK THEMES */
 let books = [
     {
         name:"Physics NCERT",
         price:499,
-        img:"https://m.media-amazon.com/images/I/71r1Yc7U6bL.jpg",
-        preview:"📘 Motion, Force, Energy | Waves, Vectors"
+        type:"Science",
+        img:"https://m.media-amazon.com/images/I/71r1Yc7U6bL.jpg"
     },
     {
         name:"Chemistry NCERT",
         price:450,
-        img:"https://m.media-amazon.com/images/I/81R5G8U0eAL.jpg",
-        preview:"⚗️ Reactions, Organic Chemistry, Periodic Table"
+        type:"Science",
+        img:"https://m.media-amazon.com/images/I/81R5G8U0eAL.jpg"
     },
     {
         name:"Atomic Habits",
         price:499,
-        img:"https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
-        preview:"🧠 Habit formation system"
+        type:"Self Growth",
+        img:"https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg"
     },
     {
         name:"The Alchemist",
         price:299,
-        img:"https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg",
-        preview:"🌍 Journey & destiny story"
+        type:"Fiction",
+        img:"https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg"
     },
     {
         name:"Wings of Fire",
         price:350,
-        img:"https://covers.openlibrary.org/b/isbn/9788173711466-L.jpg",
-        preview:"🚀 Life story of Dr. A.P.J Abdul Kalam"
+        type:"Biography",
+        img:"https://covers.openlibrary.org/b/isbn/9788173711466-L.jpg"
     }
 ];
 
 let cart = [];
 
-/* DISPLAY */
+/* DISPLAY PREMIUM STYLE */
 function displayBooks(data) {
     let list = document.getElementById("bookList");
 
@@ -184,9 +220,12 @@ function displayBooks(data) {
         <h2>🔥 Trending Books</h2>
         <div class="row-container">
             ${data.map(book => `
-                <div class="book">
-                    <img src="${book.img}" onclick='addToCart(${JSON.stringify(book)})'>
-                    <div class="inside">${book.preview}</div>
+                <div class="book" onclick='addToCart(${JSON.stringify(book)})'>
+                    <img src="${book.img}">
+                    <div class="info">
+                        <h4>${book.name}</h4>
+                        <div class="tag">${book.type}</div>
+                    </div>
                 </div>
             `).join("")}
         </div>
@@ -224,7 +263,6 @@ function removeItem(index) {
     updateCart();
 }
 
-/* INIT */
 displayBooks(books);
 
 </script>
