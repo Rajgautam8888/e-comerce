@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BookBazaar Premium</title>
+<title>BookBazaar Netflix Pro</title>
 
 <style>
 body {
     margin: 0;
-    font-family: 'Poppins', sans-serif;
+    font-family: Arial;
     background: #141414;
     color: white;
 }
@@ -24,13 +24,13 @@ header {
 /* HERO */
 .hero {
     height: 60vh;
-    background: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d') center/cover no-repeat;
+    background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') center/cover no-repeat;
     display: flex;
     align-items: center;
     padding-left: 50px;
 }
 
-.hero-content h1 {
+.hero h1 {
     font-size: 40px;
 }
 
@@ -65,23 +65,35 @@ header {
 
 /* BOOK CARD */
 .book {
-    min-width: 150px;
-    margin-right: 10px;
+    min-width: 160px;
+    margin-right: 12px;
+    cursor: pointer;
     transition: transform 0.3s;
+    position: relative;
 }
 
 .book img {
     width: 100%;
+    border-radius: 8px;
+}
+
+/* NCERT STYLE PREVIEW BOX */
+.book .inside {
+    position: absolute;
+    bottom: 10px;
+    left: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.75);
+    font-size: 10px;
+    padding: 6px;
     border-radius: 5px;
 }
 
+/* HOVER */
 .book:hover {
-    transform: scale(1.2);
-    z-index: 2;
-}
-
-.book:hover img {
-    box-shadow: 0 0 15px red;
+    transform: scale(1.25);
+    z-index: 5;
+    box-shadow: 0 0 20px red;
 }
 
 /* CART */
@@ -95,6 +107,7 @@ header {
     border-radius: 10px;
 }
 
+/* BUTTON */
 button {
     background: red;
     color: white;
@@ -107,12 +120,12 @@ button {
 
 <body>
 
-<header>📚 BookBazaar Premium</header>
+<header>📚 BookBazaar Netflix Edition</header>
 
 <div class="hero">
-    <div class="hero-content">
-        <h1>Unlimited Books, Stories & Knowledge</h1>
-        <p>Read anywhere. Anytime.</p>
+    <div>
+        <h1>Unlimited Books & Knowledge</h1>
+        <p>Netflix-style learning experience</p>
         <button>Explore Now</button>
     </div>
 </div>
@@ -126,38 +139,61 @@ button {
 </div>
 
 <script>
+
 let books = [
-    {name:"Atomic Habits",price:499,img:"https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg"},
-    {name:"Rich Dad Poor Dad",price:350,img:"https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg"},
-    {name:"The Alchemist",price:299,img:"https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg"},
-    {name:"Ikigai",price:420,img:"https://covers.openlibrary.org/b/isbn/9780143130727-L.jpg"},
-    {name:"Harry Potter",price:599,img:"https://covers.openlibrary.org/b/isbn/9780590353427-L.jpg"},
-    {name:"Do Epic Shit",price:320,img:"https://covers.openlibrary.org/b/isbn/9789391165482-L.jpg"},
-    {name:"Deep Work",price:410,img:"https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg"},
-    {name:"Zero to One",price:380,img:"https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg"}
+    {
+        name:"Physics NCERT",
+        price:499,
+        img:"https://m.media-amazon.com/images/I/71r1Yc7U6bL.jpg",
+        preview:"📘 Motion, Force, Energy | Waves, Vectors"
+    },
+    {
+        name:"Chemistry NCERT",
+        price:450,
+        img:"https://m.media-amazon.com/images/I/81R5G8U0eAL.jpg",
+        preview:"⚗️ Reactions, Organic Chemistry, Periodic Table"
+    },
+    {
+        name:"Atomic Habits",
+        price:499,
+        img:"https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+        preview:"🧠 Habit formation system"
+    },
+    {
+        name:"The Alchemist",
+        price:299,
+        img:"https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg",
+        preview:"🌍 Journey & destiny story"
+    },
+    {
+        name:"Wings of Fire",
+        price:350,
+        img:"https://covers.openlibrary.org/b/isbn/9788173711466-L.jpg",
+        preview:"🚀 Life story of Dr. A.P.J Abdul Kalam"
+    }
 ];
 
 let cart = [];
 
-/* DISPLAY NETFLIX STYLE */
+/* DISPLAY */
 function displayBooks(data) {
     let list = document.getElementById("bookList");
 
     list.innerHTML = `
-        <div class="row">
-            <h2>🔥 Trending Books</h2>
-            <div class="row-container">
-                ${data.map(book => `
-                    <div class="book">
-                        <img src="${book.img}" onclick='addToCart(${JSON.stringify(book)})'>
-                    </div>
-                `).join("")}
-            </div>
+    <div class="row">
+        <h2>🔥 Trending Books</h2>
+        <div class="row-container">
+            ${data.map(book => `
+                <div class="book">
+                    <img src="${book.img}" onclick='addToCart(${JSON.stringify(book)})'>
+                    <div class="inside">${book.preview}</div>
+                </div>
+            `).join("")}
         </div>
-    `;
+    </div>`;
 }
 
-/* ADD TO CART */
+/* CART */
 function addToCart(book) {
     cart.push(book);
     updateCart();
@@ -167,6 +203,7 @@ function addToCart(book) {
 function updateCart() {
     let cartList = document.getElementById("cartItems");
     let total = 0;
+
     cartList.innerHTML = "";
 
     cart.forEach((item, i) => {
@@ -187,7 +224,9 @@ function removeItem(index) {
     updateCart();
 }
 
+/* INIT */
 displayBooks(books);
+
 </script>
 
 </body>
