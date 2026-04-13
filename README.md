@@ -2,139 +2,113 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BookBazaar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BookFlix - Premium Book Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #f1f3f6;
-}
-
-header {
-    background: #2874f0;
-    color: white;
-    padding: 15px;
-    text-align: center;
-}
-
-.search-box {
-    width: 60%;
-    padding: 10px;
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
-}
-
-.book {
-    background: white;
-    margin: 10px;
-    padding: 15px;
-    width: 200px;
-    box-shadow: 0 0 5px gray;
-}
-
-button {
-    background: #fb641b;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-}
-
-.cart {
-    position: fixed;
-    right: 10px;
-    top: 70px;
-    background: white;
-    padding: 15px;
-    width: 250px;
-    box-shadow: 0 0 10px gray;
-}
+body { margin:0; font-family:'Poppins', sans-serif; background:#0d0d0d; color:#fff; }
+header { padding:15px 30px; background:#111; display:flex; justify-content:space-between; align-items:center; }
+header h1 { color:#e50914; }
+nav a { color:#fff; margin:0 10px; text-decoration:none; }
+.banner { height:300px; background:linear-gradient(to right,#000,transparent), url('https://images.unsplash.com/photo-1512820790803-83ca734da794'); background-size:cover; display:flex; align-items:center; padding:40px; }
+.banner h2 { font-size:40px; }
+.section { padding:20px; }
+.section h2 { margin-bottom:10px; }
+.row { display:flex; overflow-x:auto; }
+.card { min-width:200px; margin-right:15px; background:#1a1a1a; border-radius:10px; overflow:hidden; transition:0.3s; }
+.card:hover { transform:scale(1.1); }
+.card img { width:100%; height:250px; object-fit:cover; }
+.card .info { padding:10px; }
+button { background:#e50914; border:none; padding:8px 12px; color:#fff; cursor:pointer; border-radius:5px; }
+.payment { background:#111; padding:20px; text-align:center; }
+.qr { width:150px; margin:10px auto; }
 </style>
 </head>
-
 <body>
-
 <header>
-    <h1>📚 BookBazaar</h1>
-    <input type="text" class="search-box" placeholder="Search books..." onkeyup="searchBooks()">
+<h1>BookFlix</h1>
+<nav>
+<a href="#">Home</a>
+<a href="#">Sell Book</a>
+<a href="#">Buy Book</a>
+</nav>
 </header>
 
-<div class="container" id="bookList"></div>
+<div class="banner">
+<h2>Buy & Sell Books Like Netflix</h2>
+</div>
 
-<div class="cart">
-    <h3>🛒 Cart</h3>
-    <ul id="cartItems"></ul>
-    <h4 id="total">Total: ₹0</h4>
+<div class="section">
+<h2>Physics Books</h2>
+<div class="row" id="physics"></div>
+</div>
 
-    <h4>Payment</h4>
-    <button onclick="payOnline()">Pay Online</button>
-    <br><br>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=payment123" alt="QR Code">
-    <p>Scan to Pay</p>
+<div class="section">
+<h2>Math Books</h2>
+<div class="row" id="math"></div>
+</div>
+
+<div class="section">
+<h2>Story Books</h2>
+<div class="row" id="story"></div>
+</div>
+
+<div class="payment">
+<h2>Payment Method</h2>
+<p>UPI / QR Code</p>
+<img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=yourupi@upi" />
 </div>
 
 <script>
-let books = [];
-let cart = [];
+const books = [];
 
-// Generate 100000 books (Demo)
-for (let i = 1; i <= 1000; i++) {
+// Classes 1 to 12
+const classes = Array.from({length:12}, (_,i)=>`Class ${i+1}`);
+const subjects = ['Physics','Math','Science','English','History'];
+
+classes.forEach(cls => {
+  subjects.forEach((sub, index) => {
     books.push({
-        name: "Book " + i,
-        price: Math.floor(Math.random() * 500) + 100,
-        type: i % 2 === 0 ? "New" : "Old"
+      name: `${cls} - ${sub} Book`,
+      price: '₹' + (100 + Math.floor(Math.random()*400)),
+      image: `https://source.unsplash.com/200x300/?${sub},education,book`,
+      category: cls
     });
-}
+  });
+});
 
-function displayBooks(data) {
-    let list = document.getElementById("bookList");
-    list.innerHTML = "";
-    data.forEach((book, index) => {
-        list.innerHTML += `
-        <div class="book">
-            <h4>${book.name}</h4>
-            <p>Type: ${book.type}</p>
-            <p>Price: ₹${book.price}</p>
-            <button onclick="addToCart(${index})">Add to Cart</button>
+function render(){
+  const container = document.createElement('div');
+  container.className = 'section';
+  document.body.appendChild(container);
+
+  classes.forEach(cls => {
+    let section = document.createElement('div');
+    section.innerHTML = `<h2>${cls} Books</h2><div class="row" id="${cls.replace(/ /g,'')}"></div>`;
+    container.appendChild(section);
+
+    let row = section.querySelector('.row');
+
+    books.filter(b=>b.category===cls).forEach(book=>{
+      let div = document.createElement('div');
+      div.className='card';
+      div.innerHTML = `
+        <img src="${book.image}">
+        <div class="info">
+          <h4>${book.name}</h4>
+          <p>${book.price}</p>
+          <button onclick="buyBook('${book.name}')">Buy</button>
         </div>`;
+      row.appendChild(div);
     });
+  });
 }
 
-function addToCart(index) {
-    cart.push(books[index]);
-    updateCart();
+function buyBook(name){
+  alert('Proceed to payment for ' + name);
 }
 
-function updateCart() {
-    let cartList = document.getElementById("cartItems");
-    let total = 0;
-    cartList.innerHTML = "";
-
-    cart.forEach(item => {
-        total += item.price;
-        cartList.innerHTML += `<li>${item.name} - ₹${item.price}</li>`;
-    });
-
-    document.getElementById("total").innerText = "Total: ₹" + total;
-}
-
-function searchBooks() {
-    let input = document.querySelector(".search-box").value.toLowerCase();
-    let filtered = books.filter(book => book.name.toLowerCase().includes(input));
-    displayBooks(filtered);
-}
-
-function payOnline() {
-    alert("Redirecting to payment gateway...");
-    // Integrate Razorpay / Stripe here
-}
-
-displayBooks(books);
+render();
 </script>
-
 </body>
 </html>
