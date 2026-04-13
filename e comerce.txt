@@ -61,30 +61,46 @@ button { background:#e50914; border:none; padding:8px 12px; color:#fff; cursor:p
 
 <script>
 const books = [];
-const categories = ['physics','math','story'];
 
-for(let i=1;i<=100;i++){
-  let category = categories[i%3];
-  books.push({
-    name: category.toUpperCase() + ' Book ' + i,
-    price: '₹' + (100 + i*5),
-    image: `https://source.unsplash.com/200x300/?${category},book`
+// Classes 1 to 12
+const classes = Array.from({length:12}, (_,i)=>`Class ${i+1}`);
+const subjects = ['Physics','Math','Science','English','History'];
+
+classes.forEach(cls => {
+  subjects.forEach((sub, index) => {
+    books.push({
+      name: `${cls} - ${sub} Book`,
+      price: '₹' + (100 + Math.floor(Math.random()*400)),
+      image: `https://source.unsplash.com/200x300/?${sub},education,book`,
+      category: cls
+    });
   });
-}
+});
 
-function render(category){
-  let container = document.getElementById(category);
-  books.filter(b=>b.name.toLowerCase().includes(category)).forEach(book=>{
-    let div = document.createElement('div');
-    div.className='card';
-    div.innerHTML = `
-      <img src="${book.image}">
-      <div class="info">
-        <h4>${book.name}</h4>
-        <p>${book.price}</p>
-        <button onclick="buyBook('${book.name}')">Buy</button>
-      </div>`;
-    container.appendChild(div);
+function render(){
+  const container = document.createElement('div');
+  container.className = 'section';
+  document.body.appendChild(container);
+
+  classes.forEach(cls => {
+    let section = document.createElement('div');
+    section.innerHTML = `<h2>${cls} Books</h2><div class="row" id="${cls.replace(/ /g,'')}"></div>`;
+    container.appendChild(section);
+
+    let row = section.querySelector('.row');
+
+    books.filter(b=>b.category===cls).forEach(book=>{
+      let div = document.createElement('div');
+      div.className='card';
+      div.innerHTML = `
+        <img src="${book.image}">
+        <div class="info">
+          <h4>${book.name}</h4>
+          <p>${book.price}</p>
+          <button onclick="buyBook('${book.name}')">Buy</button>
+        </div>`;
+      row.appendChild(div);
+    });
   });
 }
 
@@ -92,7 +108,7 @@ function buyBook(name){
   alert('Proceed to payment for ' + name);
 }
 
-categories.forEach(render);
+render();
 </script>
 </body>
 </html>
