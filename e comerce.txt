@@ -2,154 +2,164 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BookBazaar</title>
+<title>BookBazaar Premium</title>
 
 <style>
 body {
-    font-family: Arial;
     margin: 0;
-    background: #f1f3f6;
-    animation: fadeIn 0.5s ease-in;
-}
-
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-
-header {
-    background: #2874f0;
+    font-family: 'Poppins', sans-serif;
+    background: #141414;
     color: white;
+}
+
+/* HEADER */
+header {
+    background: black;
     padding: 15px;
     text-align: center;
+    font-size: 22px;
+    letter-spacing: 2px;
 }
 
-.search-box {
-    width: 60%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-}
-
-.container {
+/* HERO */
+.hero {
+    height: 60vh;
+    background: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d') center/cover no-repeat;
     display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
+    align-items: center;
+    padding-left: 50px;
+}
+
+.hero-content h1 {
+    font-size: 40px;
+}
+
+.hero button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+/* ROW */
+.row {
+    margin: 20px;
+}
+
+.row h2 {
+    margin-left: 10px;
+}
+
+/* SCROLL */
+.row-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+}
+
+.row-container::-webkit-scrollbar {
+    display: none;
 }
 
 /* BOOK CARD */
 .book {
-    background: white;
-    margin: 10px;
-    padding: 15px;
-    width: 220px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-}
-
-.book:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    min-width: 150px;
+    margin-right: 10px;
+    transition: transform 0.3s;
 }
 
 .book img {
-    width: 120px;
-    height: 170px;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-/* BUTTON */
-button {
-    background: #fb641b;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+    width: 100%;
     border-radius: 5px;
-    transition: 0.3s;
 }
 
-button:hover {
-    background: #ff7a33;
-    transform: scale(1.05);
+.book:hover {
+    transform: scale(1.2);
+    z-index: 2;
+}
+
+.book:hover img {
+    box-shadow: 0 0 15px red;
 }
 
 /* CART */
 .cart {
     position: fixed;
     right: 10px;
-    top: 70px;
-    background: white;
+    top: 80px;
+    background: rgba(0,0,0,0.9);
     padding: 15px;
-    width: 260px;
-    box-shadow: 0 0 10px gray;
+    width: 250px;
     border-radius: 10px;
-    transition: transform 0.3s;
 }
 
-.cart:hover {
-    transform: scale(1.02);
+button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-    <h1>📚 BookBazaar</h1>
-    <input type="text" class="search-box" placeholder="Search books..." onkeyup="searchBooks()">
-</header>
+<header>📚 BookBazaar Premium</header>
 
-<div class="container" id="bookList"></div>
+<div class="hero">
+    <div class="hero-content">
+        <h1>Unlimited Books, Stories & Knowledge</h1>
+        <p>Read anywhere. Anytime.</p>
+        <button>Explore Now</button>
+    </div>
+</div>
+
+<div id="bookList"></div>
 
 <div class="cart">
     <h3>🛒 Cart</h3>
     <ul id="cartItems"></ul>
     <h4 id="total">Total: ₹0</h4>
-
-    <h4>Payment</h4>
-    <button onclick="payOnline()">Pay Online</button>
-    <br><br>
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=payment123">
-    <p>Scan to Pay</p>
 </div>
 
 <script>
 let books = [
-    {name:"Atomic Habits",price:499,type:"New",img:"https://m.media-amazon.com/images/I/91bYsX41DVL.jpg"},
-    {name:"Rich Dad Poor Dad",price:350,type:"New",img:"https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg"},
-    {name:"The Alchemist",price:299,type:"Old",img:"https://m.media-amazon.com/images/I/71aFt4+OTOL.jpg"},
-    {name:"Ikigai",price:420,type:"New",img:"https://m.media-amazon.com/images/I/81l3rZK4lnL.jpg"},
-    {name:"Think and Grow Rich",price:280,type:"Old",img:"https://m.media-amazon.com/images/I/71UypkUjStL.jpg"},
-    {name:"Wings of Fire",price:350,type:"New",img:"https://m.media-amazon.com/images/I/71KKZlVjbwL.jpg"}
+    {name:"Atomic Habits",price:499,img:"https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg"},
+    {name:"Rich Dad Poor Dad",price:350,img:"https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg"},
+    {name:"The Alchemist",price:299,img:"https://covers.openlibrary.org/b/isbn/9780061122415-L.jpg"},
+    {name:"Ikigai",price:420,img:"https://covers.openlibrary.org/b/isbn/9780143130727-L.jpg"},
+    {name:"Harry Potter",price:599,img:"https://covers.openlibrary.org/b/isbn/9780590353427-L.jpg"},
+    {name:"Do Epic Shit",price:320,img:"https://covers.openlibrary.org/b/isbn/9789391165482-L.jpg"},
+    {name:"Deep Work",price:410,img:"https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg"},
+    {name:"Zero to One",price:380,img:"https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg"}
 ];
 
 let cart = [];
 
-/* DISPLAY BOOKS */
+/* DISPLAY NETFLIX STYLE */
 function displayBooks(data) {
     let list = document.getElementById("bookList");
-    list.innerHTML = "";
 
-    data.forEach((book) => {
-        list.innerHTML += `
-        <div class="book">
-            <img src="${book.img}">
-            <h4>${book.name}</h4>
-            <p style="color:green;font-weight:bold;">${book.type}</p>
-            <p><b>₹${book.price}</b></p>
-            <button onclick='addToCart(${JSON.stringify(book)})'>Add to Cart</button>
-        </div>`;
-    });
+    list.innerHTML = `
+        <div class="row">
+            <h2>🔥 Trending Books</h2>
+            <div class="row-container">
+                ${data.map(book => `
+                    <div class="book">
+                        <img src="${book.img}" onclick='addToCart(${JSON.stringify(book)})'>
+                    </div>
+                `).join("")}
+            </div>
+        </div>
+    `;
 }
 
 /* ADD TO CART */
 function addToCart(book) {
     cart.push(book);
-    alert(book.name + " added to cart 🛒");
     updateCart();
 }
 
@@ -171,26 +181,10 @@ function updateCart() {
     document.getElementById("total").innerText = "Total: ₹" + total;
 }
 
-/* REMOVE ITEM */
+/* REMOVE */
 function removeItem(index) {
     cart.splice(index, 1);
     updateCart();
-}
-
-/* SEARCH */
-function searchBooks() {
-    let input = document.querySelector(".search-box").value.toLowerCase();
-
-    let filtered = books.filter(book =>
-        book.name.toLowerCase().includes(input)
-    );
-
-    displayBooks(filtered);
-}
-
-/* PAYMENT */
-function payOnline() {
-    alert("Redirecting to payment gateway...");
 }
 
 displayBooks(books);
