@@ -3,112 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BookFlix - Premium Book Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>BookFlix OTP Login</title>
+
 <style>
-body { margin:0; font-family:'Poppins', sans-serif; background:#0d0d0d; color:#fff; }
-header { padding:15px 30px; background:#111; display:flex; justify-content:space-between; align-items:center; }
-header h1 { color:#e50914; }
-nav a { color:#fff; margin:0 10px; text-decoration:none; }
-.banner { height:300px; background:linear-gradient(to right,#000,transparent), url('https://images.unsplash.com/photo-1512820790803-83ca734da794'); background-size:cover; display:flex; align-items:center; padding:40px; }
-.banner h2 { font-size:40px; }
-.section { padding:20px; }
-.section h2 { margin-bottom:10px; }
-.row { display:flex; overflow-x:auto; }
-.card { min-width:200px; margin-right:15px; background:#1a1a1a; border-radius:10px; overflow:hidden; transition:0.3s; }
-.card:hover { transform:scale(1.1); }
-.card img { width:100%; height:250px; object-fit:cover; }
-.card .info { padding:10px; }
-button { background:#e50914; border:none; padding:8px 12px; color:#fff; cursor:pointer; border-radius:5px; }
-.payment { background:#111; padding:20px; text-align:center; }
-.qr { width:150px; margin:10px auto; }
+body { margin:0; font-family:Arial; background:#0d0d0d; color:#fff; }
+
+/* Auth UI */
+.auth {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  flex-direction:column;
+}
+
+input {
+  padding:10px;
+  margin:10px;
+  width:250px;
+  border-radius:5px;
+  border:none;
+}
+
+button {
+  padding:10px 20px;
+  background:#e50914;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+.hidden { display:none; }
+
+/* Main UI */
+header {
+  padding:15px;
+  background:#111;
+  display:flex;
+  justify-content:space-between;
+}
+
+.banner {
+  height:200px;
+  background:url('https://images.unsplash.com/photo-1512820790803-83ca734da794');
+  background-size:cover;
+  display:flex;
+  align-items:center;
+  padding:20px;
+}
+
+.row { display:flex; overflow:auto; }
+
+.card {
+  min-width:180px;
+  background:#1a1a1a;
+  margin:10px;
+  border-radius:10px;
+}
+
+.card img { width:100%; height:200px; }
 </style>
 </head>
+
 <body>
+
+<!-- 🔐 STEP 1: EMAIL -->
+<div id="emailPage" class="auth">
+  <h2>Enter Gmail</h2>
+  <input type="email" id="email" placeholder="Enter Gmail">
+  <button onclick="sendOTP()">Send OTP</button>
+  <p id="msg1"></p>
+</div>
+
+<!-- 🔢 STEP 2: OTP -->
+<div id="otpPage" class="auth hidden">
+  <h2>Enter OTP</h2>
+  <input type="number" id="otpInput" placeholder="Enter OTP">
+  <button onclick="verifyOTP()">Verify</button>
+  <p id="msg2"></p>
+</div>
+
+<!-- 📚 MAIN PAGE -->
+<div id="mainPage" class="hidden">
+
 <header>
-<h1>BookFlix</h1>
-<nav>
-<a href="#">Home</a>
-<a href="#">Sell Book</a>
-<a href="#">Buy Book</a>
-</nav>
+  <h2>📚 BookFlix</h2>
+  <button onclick="logout()">Logout</button>
 </header>
 
 <div class="banner">
-<h2>Buy & Sell Books Like Netflix</h2>
+  <h2>Welcome to BookFlix</h2>
 </div>
 
-<div class="section">
-<h2>Physics Books</h2>
-<div class="row" id="physics"></div>
-</div>
+<div id="books"></div>
 
-<div class="section">
-<h2>Math Books</h2>
-<div class="row" id="math"></div>
-</div>
-
-<div class="section">
-<h2>Story Books</h2>
-<div class="row" id="story"></div>
-</div>
-
-<div class="payment">
-<h2>Payment Method</h2>
-<p>UPI / QR Code</p>
-<img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=yourupi@upi" />
 </div>
 
 <script>
-const books = [];
 
-// Classes 1 to 12
-const classes = Array.from({length:12}, (_,i)=>`Class ${i+1}`);
-const subjects = ['Physics','Math','Science','English','History'];
+let generatedOTP = "";
 
-classes.forEach(cls => {
-  subjects.forEach((sub, index) => {
-    books.push({
-      name: `${cls} - ${sub} Book`,
-      price: '₹' + (100 + Math.floor(Math.random()*400)),
-      image: `https://source.unsplash.com/200x300/?${sub},education,book`,
-      category: cls
+// 📧 SEND OTP
+function sendOTP(){
+  let email = document.getElementById("email").value;
+
+  if(!email.includes("@gmail.com")){
+    document.getElementById("msg1").innerText = "Enter valid Gmail!";
+    return;
+  }
+
+  // Generate OTP
+  generatedOTP = Math.floor(1000 + Math.random()*9000).toString();
+
+  alert("Your OTP is: " + generatedOTP); // Demo only
+
+  document.getElementById("emailPage").classList.add("hidden");
+  document.getElementById("otpPage").classList.remove("hidden");
+}
+
+// ✅ VERIFY OTP
+function verifyOTP(){
+  let userOTP = document.getElementById("otpInput").value;
+
+  if(userOTP === generatedOTP){
+    localStorage.setItem("userLoggedIn", "true");
+
+    document.getElementById("otpPage").classList.add("hidden");
+    document.getElementById("mainPage").classList.remove("hidden");
+
+    loadBooks();
+  } else {
+    document.getElementById("msg2").innerText = "Wrong OTP!";
+  }
+}
+
+// 🔓 LOGOUT
+function logout(){
+  localStorage.removeItem("userLoggedIn");
+  location.reload();
+}
+
+// 📚 BOOKS
+function loadBooks(){
+  const container = document.getElementById("books");
+
+  for(let i=1;i<=12;i++){
+    let section = document.createElement("div");
+    section.innerHTML = `<h3>Class ${i}</h3>`;
+
+    let row = document.createElement("div");
+    row.className = "row";
+
+    ["Physics","Math","Science"].forEach(sub=>{
+      let card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="https://source.unsplash.com/200x300/?${sub},book">
+        <p>${sub} Book</p>
+        <button onclick="buy('${sub}')">Buy</button>
+      `;
+      row.appendChild(card);
     });
-  });
-});
 
-function render(){
-  const container = document.createElement('div');
-  container.className = 'section';
-  document.body.appendChild(container);
-
-  classes.forEach(cls => {
-    let section = document.createElement('div');
-    section.innerHTML = `<h2>${cls} Books</h2><div class="row" id="${cls.replace(/ /g,'')}"></div>`;
+    section.appendChild(row);
     container.appendChild(section);
-
-    let row = section.querySelector('.row');
-
-    books.filter(b=>b.category===cls).forEach(book=>{
-      let div = document.createElement('div');
-      div.className='card';
-      div.innerHTML = `
-        <img src="${book.image}">
-        <div class="info">
-          <h4>${book.name}</h4>
-          <p>${book.price}</p>
-          <button onclick="buyBook('${book.name}')">Buy</button>
-        </div>`;
-      row.appendChild(div);
-    });
-  });
+  }
 }
 
-function buyBook(name){
-  alert('Proceed to payment for ' + name);
+// 💰 BUY
+function buy(name){
+  alert("Proceeding to payment for " + name);
 }
 
-render();
+// 🔁 AUTO LOGIN
+if(localStorage.getItem("userLoggedIn") === "true"){
+  document.getElementById("emailPage").classList.add("hidden");
+  document.getElementById("mainPage").classList.remove("hidden");
+  loadBooks();
+}
+
 </script>
+
 </body>
 </html>
